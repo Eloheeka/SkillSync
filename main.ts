@@ -130,7 +130,7 @@ class UserManagement{
          console.log(`User with id ${newUser.id} and ${newUser.email} already exists.`);
          return;
    }else{
-    users.push(newUser);
+    this.users.push(newUser);
     console.log("User added successfully.");
    }
  };
@@ -146,14 +146,15 @@ class UserManagement{
     }
 
     };
-    getUserById(userId:number): User | null{
+getUserById(userId:number): User | null{
        const user = this.users.find(u => u.id === userId) || null;
        return user;
     }
-    listUsers(): void{
-
-    }
-   searchUsers(query: string | number): User[] {
+listUsers(): void {
+    console.log("\n📋 All Users List:");
+    this.users.forEach(user => this.getUserInfo(user));
+   }
+searchUsers(query: string | number): User[] {
     const queryStr = query.toString().toLowerCase();
 
     const result = this.users.filter(user =>
@@ -169,6 +170,24 @@ class UserManagement{
 getUserInfo(user: User): void {
     console.log(`${user.name} (id: ${user.id}) - email: ${user.email} role: ${user.role ? user.role : "role not assigned"}`);
 }
+
+deleteUser(userId: number): void {
+    if (!this.currentUser || this.currentUser.role?.toLowerCase() !== "admin") {
+        console.log(" Only admins can delete users.");
+        return;
+    }
+
+    const userIndex = this.users.findIndex(u => u.id === userId);
+
+    if (userIndex === -1) {
+        console.log(`⚠️ User with id ${userId} not found.`);
+        return;
+    }
+
+    this.users.splice(userIndex, 1);
+    console.log(`🗑️ User with id ${userId} deleted successfully.`);
+}
+
 
 
 }
